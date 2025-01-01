@@ -25,18 +25,39 @@ SECRET_KEY = "django-insecure-_4mnx%osl1$-an)7j6n)(cp3nd^ub8*v7_3pbflk2$xqkeq_2@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]  # TODO: Change when moving to prod
 
 # Set the default redirect URL for successful logins
 LOGIN_REDIRECT_URL = "/accounts/welcome/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
 
+# Use secure cookies
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Enforce https
+SECRURE_SSL_REDIRECT = (
+    True  # Redirect all HTTP requests to HTTPS # Redirect all HTTP requests to HTTPS
+)
+SECURE_HSTS_SECONDS = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 
 # Set the login URL for views requiring authentication
 LOGIN_URL = "/accounts/login/"
 
-# Application definition
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
 
+SITE_ID = 1  # Required by Django sites framework
+
+ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAE_REQUIRED = True
+
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -45,6 +66,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "accounts",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.facebook",
+    "allauth.socialaccount.providers.github",
 ]
 
 MIDDLEWARE = [
@@ -55,6 +82,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "myproject.urls"
@@ -67,6 +95,7 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
+                "django.template.context_processors.request",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
