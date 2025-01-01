@@ -2,6 +2,62 @@
 <html lang="en">
 
 <head>
+
+  <script>
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '240617367973382',
+        cookie: true,
+        xfbml: true,
+        version: 'v21.0'
+      });
+
+      FB.AppEvents.logPageView();
+
+      FB.getLoginStatus(function (response) {
+        statusChangeCallback(response);
+      });
+    };
+
+    // Load FB SDK async
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    function statusChangeCallback(response) {
+      console.log(response)
+
+      if (response.status === 'connected') {
+        handleLogin(response.authResponse)
+      }
+      else {
+        document.getElementById('login-btn').style.display = 'block'
+      }
+    }
+
+    function handleLogin(authResponse) {
+      fetch('facebook-login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify(authResponse)
+      }).then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            window.location.href = '/welcome/';
+          } else {
+            alert('Failed to login');
+          }
+        });
+    }
+  </script>
+
   <title>Login</title>
 </head>
 
@@ -12,6 +68,12 @@
     {{ form.as_p }}
     <button type="submit">Login</button>
   </form>
+
+  <button id='login-btn' style="display:none;" onclick="FB.login(function(response) {
+    if (response.status === 'connected') {
+    handleLogin(response.authResponse);
+  }
+  });">Login with Facebook</button>
 
   {% if form.errors %}
   <div>
