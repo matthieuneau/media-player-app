@@ -28,7 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # Set the default redirect URL for successful logins
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/accounts/welcome/"
+LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 
 # Set the login URL for views requiring authentication
