@@ -1,5 +1,5 @@
-from django.urls import path
-from .views import register, welcome
+from django.urls import path, include
+from .views import facebook_login, register, welcome
 from django.contrib.auth.views import LoginView, LogoutView
 
 urlpatterns = [
@@ -9,4 +9,6 @@ urlpatterns = [
     ),
     path("welcome/", welcome, name="welcome"),
     path("logout/", LogoutView.as_view(), name="logout"),
+    path("", include("allauth.urls")),
+    path("facebook-login/", facebook_login, name="facebook_login"),
 ]
